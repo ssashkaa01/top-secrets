@@ -53,7 +53,20 @@ namespace WCF_TopSecrets
 
         public string Login(string login, string password)
         {
-            throw new NotImplementedException();
+            // Отримати користувача по логіну
+            Entities.User user = userCtx.GetUserByLogin(login);
+
+            // Якщо користувач не існує, то завершуємо
+            if (userCtx.GetUserByLogin(login) != null) return "";
+
+            // Звіряємо пароль
+            if(user.Password == userCtx.GetHashString(password))
+            {
+                // Встановлюємо токен
+                return userCtx.SetToken(user.Id, DateTime.Now.ToString());
+            }
+
+            return "";
         }
 
         public bool Logout(string token)
@@ -73,7 +86,7 @@ namespace WCF_TopSecrets
             if (userCtx.GetUserByLogin(login) != null) return false;
 
             // Добавляємо нового користувача
-           
+            userCtx.Create(login, password);
 
             return true;
         }

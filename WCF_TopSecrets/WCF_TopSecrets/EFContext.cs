@@ -14,13 +14,13 @@ namespace WCF_TopSecrets
             Database.SetInitializer<EFContext>(new StoreDbInitializer());
         }    
   
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Secret>()
-               .HasRequired<User>(s => s.User)
-               .WithMany(u => u.Secrets)
-               .HasForeignKey<int>(s => s.UserId);
-        }
+        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<Secret>()
+        //       .HasRequired<User>(s => s.User)
+        //       .WithMany(u => u.Secrets)
+        //       .HasForeignKey<int>(s => s.UserId);
+        //}
     }
     
     public class StoreDbInitializer : DropCreateDatabaseAlways<EFContext>

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
+using System;
 
 namespace WCF_TopSecrets.BLL
 {
@@ -42,6 +43,32 @@ namespace WCF_TopSecrets.BLL
         {
             GetUserByToken(token).Token = "";
 
+            ctx.SaveChanges();
+        }
+
+        // Встановити токен
+        public string SetToken(int userId, string tokenData)
+        {
+            string token = GetHashString(tokenData);
+
+            GetUserByToken(token).Token = GetHashString(token);
+
+            ctx.SaveChanges();
+
+            return token;
+        }
+
+        // Створити користувача
+        public void Create(string login, string password)
+        {
+            ctx.Users.Add(new Entities.User()
+            {
+                Login = login,
+                Password = GetHashString(password),
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            });
+           
             ctx.SaveChanges();
         }
 
