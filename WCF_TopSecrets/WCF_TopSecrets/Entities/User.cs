@@ -28,7 +28,7 @@ namespace WCF_TopSecrets.Entities
         [Required]
         public string Password { get; set; }
 
-        [Required]
+       // [Required]
         public string Token { get; set; }
 
         [Required]

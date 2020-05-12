@@ -27,17 +27,10 @@ namespace WCF_TopSecrets
     {
         protected override void Seed(EFContext db)
         {
-            db.Users.Add(new User()
-            { 
-                Login = "demo",
-                // sha512 : 12345
-                Password = "fa585d89c851dd338a70dcf535aa2a92fee7836dd6aff1226583e88e0996293f16bc009c652826e0fc5c706695a03cddce372f139eff4d13959da6f1f5d3eabe",
-                Name = "DemoName",
-                Surname = "DemoSurname",
-                Email = "demo@demo.com"
-            });
+            BLL.User userBLL = new BLL.User();
 
-            db.SaveChanges();
+            userBLL.Create("demo", "fsadgas");
+          
         }
     }
 }
