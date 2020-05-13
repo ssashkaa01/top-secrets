@@ -54,16 +54,9 @@ namespace WPF_TopSecrets.Helpers
         // Перевірити email
         public static bool CheckEmail(string email)
         {
-            try
-            {
-                MailAddress m = new MailAddress(email);
+            Regex rgx = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
 
-                return true;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
+            return rgx.IsMatch(email);
         }
 
         // Отримати повідомлення про помилку email

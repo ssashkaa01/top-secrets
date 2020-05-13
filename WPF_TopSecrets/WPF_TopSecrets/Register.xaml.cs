@@ -45,11 +45,17 @@ namespace WPF_TopSecrets
                 return;
             }
 
-            bool res = await service.RegisterAsync(loginBox.Text, pass1Box.Password);
+            if (!UserValidator.CheckKey(keyBox.Password))
+            {
+                MessageBox.Show(UserValidator.CheckKeyMessage());
+                return;
+            }
+
+            bool res = await service.RegisterAsync(loginBox.Text, pass1Box.Password, keyBox.Password);
 
             if(res)
             {
-                MessageBox.Show("Дякуємо за реєстрацію");
+                MessageBox.Show("Дякуємо за реєстрацію. Тепер ви можете увійти");
                 this.DialogResult = true;
                 this.Close();
             }else

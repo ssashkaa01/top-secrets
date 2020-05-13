@@ -32,6 +32,9 @@ namespace WCF_TopSecrets.Entities
         public string Token { get; set; }
 
         [Required]
+        public string KeyHash { get; set; }
+
+        [Required]
         public DateTime CreatedAt { get; set; }
 
         [Required]

@@ -19,7 +19,7 @@ namespace WCF_TopSecrets
             Entities.User user = userCtx.GetUserByToken(token);
 
             // Якщо користувач не існує, то завершуємо
-            if (user != null) return false;
+            if (user == null) return false;
 
             // Добавляємо дані
             secretCtx.AddSecretData(user.Id, data, key);
@@ -34,7 +34,7 @@ namespace WCF_TopSecrets
             Entities.User user = userCtx.GetUserByToken(token);
 
             // Якщо користувач не існує, то завершуємо
-            if (user != null) return false;
+            if (user == null) return false;
 
             // Перевіряємо старий пароль
             bool checkOld = userCtx.CheckOldPassword(user.Id, lastPass);
@@ -42,7 +42,7 @@ namespace WCF_TopSecrets
             if (!checkOld) return false;
 
             // Оновляємо пароль
-            userCtx.CheckOldPassword(user.Id, newPass);
+            userCtx.ChangePassword(user.Id, newPass);
 
             return true;
         }
@@ -53,7 +53,7 @@ namespace WCF_TopSecrets
             Entities.User user = userCtx.GetUserByToken(token);
 
             // Якщо користувач не існує, то завершуємо
-            if (user != null) return false;
+            if (user == null) return false;
 
             // Видалення
             return secretCtx.RemoveById(user.Id, secretId);
@@ -65,7 +65,7 @@ namespace WCF_TopSecrets
             Entities.User user = userCtx.GetUserByToken(token);
 
             // Якщо користувач не існує, то завершуємо
-            if (user != null) return false;
+            if (user == null) return false;
 
             userCtx.Edit(user.Id, name, surname, email);
            
@@ -78,12 +78,12 @@ namespace WCF_TopSecrets
             Entities.User user = userCtx.GetUserByToken(token);
 
             // Якщо користувач не існує, то завершуємо
-            if (user != null) return false;
+            if (user == null) return false;
 
             Entities.Secret secret = user.Secrets.Where(s => s.Id == id).FirstOrDefault();
 
             // Якщо даних не існує, то завершуємо
-            if (secret != null) return false;
+            if (secret == null) return false;
 
             // Пробуємо змінити дані
             return secretCtx.EditSecretData(user.Id, secret.Id, data, key);
@@ -95,22 +95,33 @@ namespace WCF_TopSecrets
             Entities.User user = userCtx.GetUserByToken(token);
 
             // Якщо користувач не існує, то завершуємо
-            if (user != null) return null;
+            if (user == null) return null;
 
             // Отримати дані
             return secretCtx.GetAllSecretData(user.Id, key);
         }
 
-        public string Login(string login, string password)
+        public UserData GetUserData(string token)
+        {
+            // Отримати користувача по токену
+            Entities.User user = userCtx.GetUserByToken(token);
+
+            // Якщо користувач не існує, то завершуємо
+            if (user == null) return null;
+
+            return userCtx.GetUserDataById(user.Id);
+        }
+
+        public string Login(string login, string password, string key)
         {
             // Отримати користувача по логіну
             Entities.User user = userCtx.GetUserByLogin(login);
 
             // Якщо користувач не існує, то завершуємо
-            if (userCtx.GetUserByLogin(login) != null) return "";
+            if (userCtx.GetUserByLogin(login) == null) return "";
 
             // Звіряємо пароль
-            if(user.Password == userCtx.GetHashString(password))
+            if(user.Password == userCtx.GetHashString(password) && user.KeyHash == userCtx.GetHashString(key))
             {
                 // Встановлюємо токен
                 return userCtx.SetToken(user.Id, DateTime.Now.ToString());
@@ -122,7 +133,7 @@ namespace WCF_TopSecrets
         public bool Logout(string token)
         {
             // Якщо користувач по токену не існує, то завершуємо
-            if (userCtx.GetUserByToken(token) != null) return false;
+            if (userCtx.GetUserByToken(token) == null) return false;
 
             // Видаляємо токен
             userCtx.RemoveToken(token);
@@ -130,13 +141,13 @@ namespace WCF_TopSecrets
             return true;
         }
 
-        public bool Register(string login, string password)
+        public bool Register(string login, string password, string key)
         {
             // Перевірка чи існує користувач за даним логіном
             if (userCtx.GetUserByLogin(login) != null) return false;
 
             // Добавляємо нового користувача
-            userCtx.Create(login, password);
+            userCtx.Create(login, password, key);
 
             return true;
         }

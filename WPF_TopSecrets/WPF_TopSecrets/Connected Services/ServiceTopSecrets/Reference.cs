@@ -122,21 +122,98 @@ namespace WPF_TopSecrets.ServiceTopSecrets {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="UserData", Namespace="http://schemas.datacontract.org/2004/07/WCF_TopSecrets")]
+    [System.SerializableAttribute()]
+    public partial class UserData : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string EmailField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string SurnameField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Email {
+            get {
+                return this.EmailField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.EmailField, value) != true)) {
+                    this.EmailField = value;
+                    this.RaisePropertyChanged("Email");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Surname {
+            get {
+                return this.SurnameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SurnameField, value) != true)) {
+                    this.SurnameField = value;
+                    this.RaisePropertyChanged("Surname");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceTopSecrets.IService")]
     public interface IService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/Login", ReplyAction="http://tempuri.org/IService/LoginResponse")]
-        string Login([System.ServiceModel.MessageParameterAttribute(Name="login")] string login1, string password);
+        string Login([System.ServiceModel.MessageParameterAttribute(Name="login")] string login1, string password, string key);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/Login", ReplyAction="http://tempuri.org/IService/LoginResponse")]
-        System.Threading.Tasks.Task<string> LoginAsync(string login, string password);
+        System.Threading.Tasks.Task<string> LoginAsync(string login, string password, string key);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/Register", ReplyAction="http://tempuri.org/IService/RegisterResponse")]
-        bool Register(string login, string password);
+        bool Register(string login, string password, string key);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/Register", ReplyAction="http://tempuri.org/IService/RegisterResponse")]
-        System.Threading.Tasks.Task<bool> RegisterAsync(string login, string password);
+        System.Threading.Tasks.Task<bool> RegisterAsync(string login, string password, string key);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/Logout", ReplyAction="http://tempuri.org/IService/LogoutResponse")]
         bool Logout(string token);
@@ -179,6 +256,12 @@ namespace WPF_TopSecrets.ServiceTopSecrets {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/EditProfile", ReplyAction="http://tempuri.org/IService/EditProfileResponse")]
         System.Threading.Tasks.Task<bool> EditProfileAsync(string token, string name, string surname, string email);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/GetUserData", ReplyAction="http://tempuri.org/IService/GetUserDataResponse")]
+        WPF_TopSecrets.ServiceTopSecrets.UserData GetUserData(string token);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/GetUserData", ReplyAction="http://tempuri.org/IService/GetUserDataResponse")]
+        System.Threading.Tasks.Task<WPF_TopSecrets.ServiceTopSecrets.UserData> GetUserDataAsync(string token);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -208,20 +291,20 @@ namespace WPF_TopSecrets.ServiceTopSecrets {
                 base(binding, remoteAddress) {
         }
         
-        public string Login(string login1, string password) {
-            return base.Channel.Login(login1, password);
+        public string Login(string login1, string password, string key) {
+            return base.Channel.Login(login1, password, key);
         }
         
-        public System.Threading.Tasks.Task<string> LoginAsync(string login, string password) {
-            return base.Channel.LoginAsync(login, password);
+        public System.Threading.Tasks.Task<string> LoginAsync(string login, string password, string key) {
+            return base.Channel.LoginAsync(login, password, key);
         }
         
-        public bool Register(string login, string password) {
-            return base.Channel.Register(login, password);
+        public bool Register(string login, string password, string key) {
+            return base.Channel.Register(login, password, key);
         }
         
-        public System.Threading.Tasks.Task<bool> RegisterAsync(string login, string password) {
-            return base.Channel.RegisterAsync(login, password);
+        public System.Threading.Tasks.Task<bool> RegisterAsync(string login, string password, string key) {
+            return base.Channel.RegisterAsync(login, password, key);
         }
         
         public bool Logout(string token) {
@@ -278,6 +361,14 @@ namespace WPF_TopSecrets.ServiceTopSecrets {
         
         public System.Threading.Tasks.Task<bool> EditProfileAsync(string token, string name, string surname, string email) {
             return base.Channel.EditProfileAsync(token, name, surname, email);
+        }
+        
+        public WPF_TopSecrets.ServiceTopSecrets.UserData GetUserData(string token) {
+            return base.Channel.GetUserData(token);
+        }
+        
+        public System.Threading.Tasks.Task<WPF_TopSecrets.ServiceTopSecrets.UserData> GetUserDataAsync(string token) {
+            return base.Channel.GetUserDataAsync(token);
         }
     }
 }

@@ -13,16 +13,9 @@ namespace WPF_TopSecrets.Helpers
         // Перевірити email
         public static bool CheckEmail(string email)
         {
-            try
-            {
-                MailAddress m = new MailAddress(email);
+            Regex rgx = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
 
-                return true;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
+            return rgx.IsMatch(email);
         }
 
         // Отримати повідомлення про помилку логіна
@@ -68,7 +61,7 @@ namespace WPF_TopSecrets.Helpers
         // Перевірити ім'я
         public static bool CheckName(string name)
         {
-            Regex rgx = new Regex(@"^[\p{Cyrillic}\s]{2,40}$");
+            Regex rgx = new Regex(@"^[\p{IsCyrillic}\s]{2,40}$");
 
             return rgx.IsMatch(name);
         }
@@ -82,7 +75,7 @@ namespace WPF_TopSecrets.Helpers
         // Перевірити прізвище
         public static bool CheckSurname(string surname)
         {
-            Regex rgx = new Regex(@"^[\p{Cyrillic}\s]{2,40}$");
+            Regex rgx = new Regex(@"^[\p{IsCyrillic}\s]{2,40}$");
 
             return rgx.IsMatch(surname);
         }
@@ -91,6 +84,20 @@ namespace WPF_TopSecrets.Helpers
         public static string CheckSurnameMessage()
         {
             return "Ви ввели некоректне прізвище. Від 2 до 40 символів, кирилиця";
+        }
+
+        // Перевірити ключ
+        public static bool CheckKey(string key)
+        {
+            Regex rgx = new Regex(@"^[A-Za-z0-9]{4,40}$");
+
+            return rgx.IsMatch(key);
+        }
+
+        // Отримати повідомлення про помилку паролю
+        public static string CheckKeyMessage()
+        {
+            return "Ви ввели некоректний ключ шифрування. Від 4 до 40 символів, A-Z a-z 0-9";
         }
     }
 }

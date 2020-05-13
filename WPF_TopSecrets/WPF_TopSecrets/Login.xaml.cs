@@ -21,7 +21,8 @@ namespace WPF_TopSecrets
         public ServiceClient service;
         public string token { get; set; }
         public string login { get; set; }
-       
+        public string key { get; set; }
+
         public Login()
         {
             InitializeComponent();
@@ -41,12 +42,19 @@ namespace WPF_TopSecrets
                 return;
             }
 
-            string res = await service.LoginAsync(loginBox.Text, passBox.Password);
+            if (!UserValidator.CheckKey(keyBox.Password))
+            {
+                MessageBox.Show(UserValidator.CheckKeyMessage());
+                return;
+            }
+
+            string res = await service.LoginAsync(loginBox.Text, passBox.Password, keyBox.Password);
 
             if (res != "")
             {
                 token = res;
                 login = loginBox.Text;
+                key = keyBox.Password;
                 MessageBox.Show("Ви увійшли!");
 
                 this.DialogResult = true;

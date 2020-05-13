@@ -50,25 +50,31 @@ namespace WPF_TopSecrets
         // Вхід
         private void LoginBtn_Click(object sender, RoutedEventArgs e)
         {
-            Login loginWindow = new Login();
-            loginWindow.service = serviceTopSecrets;
-
-            bool? res = loginWindow.ShowDialog();
-
-            if(res == true)
+            if(!isAuth)
             {
-                token = loginWindow.token;
-                login = loginWindow.login;
-                SetAuthInterface(true);
+                Login loginWindow = new Login();
+                loginWindow.service = serviceTopSecrets;
+
+                bool? res = loginWindow.ShowDialog();
+
+                if (res == true)
+                {
+                    token = loginWindow.token;
+                    login = loginWindow.login;
+                    key = loginWindow.key;
+                    SetAuthInterface(true);
+                }
+            } else
+            {
+                SetAuthInterface(false);
             }
+            
         }
 
         // Редагування профіля
         private void ChangeProfileBtn_Click(object sender, RoutedEventArgs e)
         {
-            EditProfile editProfileWindow = new EditProfile();
-            editProfileWindow.service = serviceTopSecrets;
-            editProfileWindow.token = token;
+            EditProfile editProfileWindow = new EditProfile(serviceTopSecrets, token);
             editProfileWindow.ShowDialog();
         }
 
@@ -144,6 +150,7 @@ namespace WPF_TopSecrets
                 ChangeProfileBtn.IsEnabled = true;
 
                 HappyBlock.Text = "Привіт, " + login;
+                LoginBtn.Content = "ВИХІД";
 
                 try
                 {
@@ -177,10 +184,23 @@ namespace WPF_TopSecrets
                 RegisterBtn.IsEnabled = true;
                 ChangeProfileBtn.IsEnabled = false;
 
+                RemoveAuth();
+
                 HappyBlock.Text = "ЗБЕРІГАЙТЕ ДАНІ БЕЗПЕЧНО НА =TOP=SECRETS=";
+                LoginBtn.Content = "ВХІД";
 
                 SecretsDataCollection.Clear();
             }
+        }
+
+        // Видалити авторизацію
+        private void RemoveAuth()
+        {
+            serviceTopSecrets.LogoutAsync(token);
+
+            token = "";
+            login = "";
+            key = "";
         }
     }
 }

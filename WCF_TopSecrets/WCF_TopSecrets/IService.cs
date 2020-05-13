@@ -12,11 +12,11 @@ namespace WCF_TopSecrets
     {
         // Повертає токен при успішній авторизації або пустий рядок, якщо авторизація не вдалася
         [OperationContract]
-        string Login(string login, string password);
+        string Login(string login, string password, string key);
 
         // Реєстрація
         [OperationContract]
-        bool Register(string login, string password);
+        bool Register(string login, string password, string key);
 
         // Вийти із системи
         [OperationContract]
@@ -45,6 +45,23 @@ namespace WCF_TopSecrets
         // Змінити користувацькі дані
         [OperationContract]
         bool EditProfile(string token, string name, string surname, string email);
+
+        // Отримати користувацькі дані
+        [OperationContract]
+        UserData GetUserData(string token);
+    }
+
+    [DataContract]
+    public class UserData
+    {
+        [DataMember]
+        public string Name { get; set; }
+
+        [DataMember]
+        public string Surname { get; set; }
+
+        [DataMember]
+        public string Email { get; set; }
     }
 
     [DataContract]

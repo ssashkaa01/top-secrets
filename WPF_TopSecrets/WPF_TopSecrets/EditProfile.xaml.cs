@@ -22,9 +22,18 @@ namespace WPF_TopSecrets
         public ServiceClient service;
         public string token { get; set; }
 
-        public EditProfile()
+        public EditProfile(ServiceClient service, string token)
         {
             InitializeComponent();
+
+            this.service = service;
+            this.token = token;
+
+            UserData userData = service.GetUserData(token);
+
+            emailBox.Text = userData.Email;
+            nameBox.Text = userData.Name;
+            surnameBox.Text = userData.Surname;
         }
 
         private async void SubmitBtn_Click(object sender, RoutedEventArgs e)

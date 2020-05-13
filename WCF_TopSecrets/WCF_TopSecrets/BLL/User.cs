@@ -27,6 +27,19 @@ namespace WCF_TopSecrets.BLL
         }
 
         // Отримати користувача по логіну
+        public UserData GetUserDataById(int userId)
+        {
+            Entities.User user = GetUserById(userId);
+
+            return new UserData()
+            {
+                Email = user.Email,
+                Name = user.Name,
+                Surname = user.Surname
+            };
+        }
+
+        // Отримати користувача по логіну
         public Entities.User GetUserByLogin(string login)
         {
             return ctx.Users.Where(u => u.Login == login).FirstOrDefault();
@@ -57,7 +70,7 @@ namespace WCF_TopSecrets.BLL
         {
             string token = GetHashString(tokenData);
 
-            GetUserByToken(token).Token = GetHashString(token);
+            GetUserById(userId).Token = token;
 
             ctx.SaveChanges();
 
@@ -73,7 +86,7 @@ namespace WCF_TopSecrets.BLL
         }
 
         // Встановити новий пароль
-        public void SetPassword(int userId, string password)
+        public void ChangePassword(int userId, string password)
         {
             Entities.User user = GetUserById(userId);
 
@@ -83,12 +96,13 @@ namespace WCF_TopSecrets.BLL
         }
 
         // Створити користувача
-        public void Create(string login, string password)
+        public void Create(string login, string password, string key)
         {
             ctx.Users.Add(new Entities.User()
             {
                 Login = login,
                 Password = GetHashString(password),
+                KeyHash = GetHashString(key),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             });

@@ -29,7 +29,7 @@ namespace WCF_TopSecrets
         {
             BLL.User userBLL = new BLL.User();
 
-            userBLL.Create("demo", "12345678");
+            userBLL.Create("demo", "12345678", "12345");
           
         }
     }

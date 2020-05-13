@@ -13,10 +13,11 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Реєстрація" Height="450" Width="400"
-        MinHeight="450" MinWidth="400">
+        Title="Реєстрація" Height="500" Width="400"
+        MinHeight="500" MinWidth="400">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
@@ -33,9 +34,10 @@
         <TextBox Margin="25" Name="loginBox" Grid.Row="1" materialDesign:HintAssist.Hint="Логін" />
         <PasswordBox Margin="25" Name="pass1Box" Grid.Row="2" materialDesign:HintAssist.Hint="Придумайте пароль" />
         <PasswordBox Margin="25" Name="pass2Box" Grid.Row="3" materialDesign:HintAssist.Hint="Повторіть пароль" />
+        <PasswordBox Margin="25" Name="keyBox" Grid.Row="4" materialDesign:HintAssist.Hint="Ключ шифрування" />
 
         <Button
-            Grid.Row="4"
+            Grid.Row="5"
             Style="{StaticResource MaterialDesignRaisedDarkButton}"
             Width="130"
             Click="SubmitBtn_Click">
@@ -43,7 +45,7 @@
         </Button>
 
         <Button
-            Grid.Row="5"
+            Grid.Row="6"
             Style="{StaticResource MaterialDesignOutlinedButton}"
             Width="130"
             BorderThickness="0"
