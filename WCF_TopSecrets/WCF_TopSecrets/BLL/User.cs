@@ -38,6 +38,12 @@ namespace WCF_TopSecrets.BLL
             return ctx.Users.Where(u => u.Token == token).FirstOrDefault();
         }
 
+        // Отримати користувача по Id
+        public Entities.User GetUserById(int userId)
+        {
+            return ctx.Users.Where(u => u.Id == userId).FirstOrDefault();
+        }
+
         // Видалити токен
         public void RemoveToken(string token)
         {
@@ -58,6 +64,24 @@ namespace WCF_TopSecrets.BLL
             return token;
         }
 
+        // Перевірити чи правильно введено старий пароль
+        public bool CheckOldPassword(int userId, string password)
+        {
+            Entities.User user = GetUserById(userId);
+
+            return user.Password == GetHashString(password);
+        }
+
+        // Встановити новий пароль
+        public void SetPassword(int userId, string password)
+        {
+            Entities.User user = GetUserById(userId);
+
+            user.Password = GetHashString(password);
+
+            ctx.SaveChanges();
+        }
+
         // Створити користувача
         public void Create(string login, string password)
         {
@@ -69,6 +93,18 @@ namespace WCF_TopSecrets.BLL
                 UpdatedAt = DateTime.Now
             });
            
+            ctx.SaveChanges();
+        }
+
+        // Редагувати дані користувача
+        public void Edit(int userId, string name, string surname, string email)
+        {
+            Entities.User user = GetUserById(userId);
+
+            user.Name = name;
+            user.Surname = surname;
+            user.Email = email;
+
             ctx.SaveChanges();
         }
 

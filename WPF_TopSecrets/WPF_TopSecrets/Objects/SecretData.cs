@@ -9,6 +9,7 @@ namespace WPF_TopSecrets.Objects
     public class SecretData
     {
         public bool IsSelected { get; set; }
+        public int Id { get; set; }
         public string Url { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }

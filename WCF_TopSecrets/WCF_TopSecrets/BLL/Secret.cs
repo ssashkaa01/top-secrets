@@ -11,10 +11,11 @@ namespace WCF_TopSecrets.BLL
         EFContext ctx = new EFContext();
 
         // Отримати дані по користувачу
-        public SecretData[] GetAllSecretData(int userId)
+        public SecretData[] GetAllSecretData(int userId, string key)
         {
             return ctx.Secrets.Where(s => s.UserId == userId).Select(s => new SecretData()
             {
+                Id = s.Id,
                 Description = s.Description,
                 Login = s.Login,
                 Password = s.Password,
@@ -23,7 +24,7 @@ namespace WCF_TopSecrets.BLL
         }
 
         // Добавити секретні дані 
-        public void AddSecretData(int userId, SecretData data)
+        public void AddSecretData(int userId, SecretData data, string key)
         {
             ctx.Secrets.Add(new Entities.Secret()
             {
@@ -37,6 +38,24 @@ namespace WCF_TopSecrets.BLL
             });
 
             ctx.SaveChanges();
+        }
+
+        // Редагувати секретні дані
+        public bool EditSecretData(int userId, int secretId, SecretData data, string key)
+        {
+            Entities.Secret secret = GetSecretById(userId, secretId);
+
+            if (secret == null) return false;
+
+            secret.Login = data.Login;
+            secret.Password = data.Password;
+            secret.Description = data.Description;
+            secret.Url = data.Url;
+            secret.UpdatedAt = DateTime.Now;
+
+            ctx.SaveChanges();
+
+            return true;
         }
 
         // Отримати секретні дані

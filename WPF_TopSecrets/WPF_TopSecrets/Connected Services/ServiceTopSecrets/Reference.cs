@@ -26,6 +26,9 @@ namespace WPF_TopSecrets.ServiceTopSecrets {
         private string DescriptionField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string LoginField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -53,6 +56,19 @@ namespace WPF_TopSecrets.ServiceTopSecrets {
                 if ((object.ReferenceEquals(this.DescriptionField, value) != true)) {
                     this.DescriptionField = value;
                     this.RaisePropertyChanged("Description");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Id {
+            get {
+                return this.IdField;
+            }
+            set {
+                if ((this.IdField.Equals(value) != true)) {
+                    this.IdField = value;
+                    this.RaisePropertyChanged("Id");
                 }
             }
         }
@@ -129,10 +145,16 @@ namespace WPF_TopSecrets.ServiceTopSecrets {
         System.Threading.Tasks.Task<bool> LogoutAsync(string token);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/AddSecretData", ReplyAction="http://tempuri.org/IService/AddSecretDataResponse")]
-        bool AddSecretData(string token, WPF_TopSecrets.ServiceTopSecrets.SecretData data);
+        bool AddSecretData(string token, string key, WPF_TopSecrets.ServiceTopSecrets.SecretData data);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/AddSecretData", ReplyAction="http://tempuri.org/IService/AddSecretDataResponse")]
-        System.Threading.Tasks.Task<bool> AddSecretDataAsync(string token, WPF_TopSecrets.ServiceTopSecrets.SecretData data);
+        System.Threading.Tasks.Task<bool> AddSecretDataAsync(string token, string key, WPF_TopSecrets.ServiceTopSecrets.SecretData data);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/EditSecretData", ReplyAction="http://tempuri.org/IService/EditSecretDataResponse")]
+        bool EditSecretData(string token, string key, int id, WPF_TopSecrets.ServiceTopSecrets.SecretData data);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/EditSecretData", ReplyAction="http://tempuri.org/IService/EditSecretDataResponse")]
+        System.Threading.Tasks.Task<bool> EditSecretDataAsync(string token, string key, int id, WPF_TopSecrets.ServiceTopSecrets.SecretData data);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/DeleteSecretData", ReplyAction="http://tempuri.org/IService/DeleteSecretDataResponse")]
         bool DeleteSecretData(string token, int id);
@@ -141,10 +163,22 @@ namespace WPF_TopSecrets.ServiceTopSecrets {
         System.Threading.Tasks.Task<bool> DeleteSecretDataAsync(string token, int id);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/GetAllSecretData", ReplyAction="http://tempuri.org/IService/GetAllSecretDataResponse")]
-        WPF_TopSecrets.ServiceTopSecrets.SecretData[] GetAllSecretData(string token);
+        WPF_TopSecrets.ServiceTopSecrets.SecretData[] GetAllSecretData(string token, string key);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/GetAllSecretData", ReplyAction="http://tempuri.org/IService/GetAllSecretDataResponse")]
-        System.Threading.Tasks.Task<WPF_TopSecrets.ServiceTopSecrets.SecretData[]> GetAllSecretDataAsync(string token);
+        System.Threading.Tasks.Task<WPF_TopSecrets.ServiceTopSecrets.SecretData[]> GetAllSecretDataAsync(string token, string key);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/ChangePassword", ReplyAction="http://tempuri.org/IService/ChangePasswordResponse")]
+        bool ChangePassword(string token, string lastPass, string newPass);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/ChangePassword", ReplyAction="http://tempuri.org/IService/ChangePasswordResponse")]
+        System.Threading.Tasks.Task<bool> ChangePasswordAsync(string token, string lastPass, string newPass);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/EditProfile", ReplyAction="http://tempuri.org/IService/EditProfileResponse")]
+        bool EditProfile(string token, string name, string surname, string email);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/EditProfile", ReplyAction="http://tempuri.org/IService/EditProfileResponse")]
+        System.Threading.Tasks.Task<bool> EditProfileAsync(string token, string name, string surname, string email);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -198,12 +232,20 @@ namespace WPF_TopSecrets.ServiceTopSecrets {
             return base.Channel.LogoutAsync(token);
         }
         
-        public bool AddSecretData(string token, WPF_TopSecrets.ServiceTopSecrets.SecretData data) {
-            return base.Channel.AddSecretData(token, data);
+        public bool AddSecretData(string token, string key, WPF_TopSecrets.ServiceTopSecrets.SecretData data) {
+            return base.Channel.AddSecretData(token, key, data);
         }
         
-        public System.Threading.Tasks.Task<bool> AddSecretDataAsync(string token, WPF_TopSecrets.ServiceTopSecrets.SecretData data) {
-            return base.Channel.AddSecretDataAsync(token, data);
+        public System.Threading.Tasks.Task<bool> AddSecretDataAsync(string token, string key, WPF_TopSecrets.ServiceTopSecrets.SecretData data) {
+            return base.Channel.AddSecretDataAsync(token, key, data);
+        }
+        
+        public bool EditSecretData(string token, string key, int id, WPF_TopSecrets.ServiceTopSecrets.SecretData data) {
+            return base.Channel.EditSecretData(token, key, id, data);
+        }
+        
+        public System.Threading.Tasks.Task<bool> EditSecretDataAsync(string token, string key, int id, WPF_TopSecrets.ServiceTopSecrets.SecretData data) {
+            return base.Channel.EditSecretDataAsync(token, key, id, data);
         }
         
         public bool DeleteSecretData(string token, int id) {
@@ -214,12 +256,28 @@ namespace WPF_TopSecrets.ServiceTopSecrets {
             return base.Channel.DeleteSecretDataAsync(token, id);
         }
         
-        public WPF_TopSecrets.ServiceTopSecrets.SecretData[] GetAllSecretData(string token) {
-            return base.Channel.GetAllSecretData(token);
+        public WPF_TopSecrets.ServiceTopSecrets.SecretData[] GetAllSecretData(string token, string key) {
+            return base.Channel.GetAllSecretData(token, key);
         }
         
-        public System.Threading.Tasks.Task<WPF_TopSecrets.ServiceTopSecrets.SecretData[]> GetAllSecretDataAsync(string token) {
-            return base.Channel.GetAllSecretDataAsync(token);
+        public System.Threading.Tasks.Task<WPF_TopSecrets.ServiceTopSecrets.SecretData[]> GetAllSecretDataAsync(string token, string key) {
+            return base.Channel.GetAllSecretDataAsync(token, key);
+        }
+        
+        public bool ChangePassword(string token, string lastPass, string newPass) {
+            return base.Channel.ChangePassword(token, lastPass, newPass);
+        }
+        
+        public System.Threading.Tasks.Task<bool> ChangePasswordAsync(string token, string lastPass, string newPass) {
+            return base.Channel.ChangePasswordAsync(token, lastPass, newPass);
+        }
+        
+        public bool EditProfile(string token, string name, string surname, string email) {
+            return base.Channel.EditProfile(token, name, surname, email);
+        }
+        
+        public System.Threading.Tasks.Task<bool> EditProfileAsync(string token, string name, string surname, string email) {
+            return base.Channel.EditProfileAsync(token, name, surname, email);
         }
     }
 }

@@ -30,6 +30,7 @@
         </Grid.RowDefinitions>
         
         <Button
+            Name="RegisterBtn"
             Style="{StaticResource MaterialDesignRaisedButton}"
             Width="150"
             Grid.Column="0"
@@ -38,6 +39,7 @@
         </Button>
 
         <Button
+            Name="LoginBtn"
             Style="{StaticResource MaterialDesignRaisedButton}"
             Width="150"
             Grid.Column="1"
@@ -46,6 +48,7 @@
         </Button>
 
         <Button
+            Name="ChangeProfileBtn"
             Style="{StaticResource MaterialDesignRaisedButton}"
             Width="150"
             Grid.Column="2"
@@ -54,6 +57,7 @@
         </Button>
 
         <Button
+            Name="ChangePasswordBtn"
             Style="{StaticResource MaterialDesignRaisedButton}"
             Width="150"
             Grid.Column="3"
@@ -62,6 +66,7 @@
         </Button>
 
         <Button
+            Name="AddSecretDataBtn"
             Style="{StaticResource MaterialDesignRaisedButton}"
             Width="150"
             Grid.Column="3"
@@ -71,6 +76,7 @@
         </Button>
 
         <Button
+            Name="EditSecretDataBtn"
             Style="{StaticResource MaterialDesignRaisedButton}"
             Width="150"
             Grid.Column="3"
@@ -80,6 +86,7 @@
         </Button>
 
         <Button
+            Name="DeleteSecretDataBtn"
             Style="{StaticResource MaterialDesignRaisedButton}"
             Width="150"
             Grid.Column="3"
@@ -88,8 +95,8 @@
             ВИДАЛИТИ ДАНІ
         </Button>
 
-        <TextBlock Background="#424242" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource MaterialDesignHeadline5TextBlock}" TextAlignment="Center" VerticalAlignment="Center">
-            ЗБЕРІГАЙ СВОЇ ДАНІ БЕЗПЕЧНО НА =TOP=SECRETS=
+        <TextBlock Name="HappyBlock" Background="#424242" Grid.Row="1" Grid.ColumnSpan="4" Style="{StaticResource MaterialDesignHeadline5TextBlock}" TextAlignment="Center" VerticalAlignment="Center">
+            
         </TextBlock>
 
         <DockPanel

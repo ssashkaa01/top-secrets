@@ -11,27 +11,57 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WPF_TopSecrets.Helpers;
+using WPF_TopSecrets.ServiceTopSecrets;
 
 namespace WPF_TopSecrets
 {
-    /// <summary>
-    /// Interaction logic for Login.xaml
-    /// </summary>
     public partial class Login : Window
     {
+        public ServiceClient service;
+        public string token { get; set; }
+        public string login { get; set; }
+       
         public Login()
         {
             InitializeComponent();
         }
 
-        private void SubmitBtn_Click(object sender, RoutedEventArgs e)
+        private async void SubmitBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (!UserValidator.CheckLogin(loginBox.Text))
+            {
+                MessageBox.Show(UserValidator.CheckLoginMessage());
+                return;
+            }
 
+            if (!UserValidator.CheckPassword(passBox.Password))
+            {
+                MessageBox.Show(UserValidator.CheckPasswordMessage());
+                return;
+            }
+
+            string res = await service.LoginAsync(loginBox.Text, passBox.Password);
+
+            if (res != "")
+            {
+                token = res;
+                login = loginBox.Text;
+                MessageBox.Show("Ви увійшли!");
+
+                this.DialogResult = true;
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Неправильний логін або пароль");
+            }
         }
 
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            this.DialogResult = false;
+            this.Close();
         }
     }
 }

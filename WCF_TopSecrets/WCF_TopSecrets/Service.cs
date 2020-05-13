@@ -13,7 +13,7 @@ namespace WCF_TopSecrets
         Secret secretCtx = new Secret();
         User userCtx = new User();
 
-        public bool AddSecretData(string token, SecretData data)
+        public bool AddSecretData(string token, string key, SecretData data)
         {
             // Отримаємо користувача по токену
             Entities.User user = userCtx.GetUserByToken(token);
@@ -22,7 +22,27 @@ namespace WCF_TopSecrets
             if (user != null) return false;
 
             // Добавляємо дані
-            secretCtx.AddSecretData(user.Id, data);
+            secretCtx.AddSecretData(user.Id, data, key);
+
+            return true;
+        }
+
+       
+        public bool ChangePassword(string token, string lastPass, string newPass)
+        {
+            // Отримаємо користувача по токену
+            Entities.User user = userCtx.GetUserByToken(token);
+
+            // Якщо користувач не існує, то завершуємо
+            if (user != null) return false;
+
+            // Перевіряємо старий пароль
+            bool checkOld = userCtx.CheckOldPassword(user.Id, lastPass);
+
+            if (!checkOld) return false;
+
+            // Оновляємо пароль
+            userCtx.CheckOldPassword(user.Id, newPass);
 
             return true;
         }
@@ -39,7 +59,37 @@ namespace WCF_TopSecrets
             return secretCtx.RemoveById(user.Id, secretId);
         }
 
-        public SecretData[] GetAllSecretData(string token)
+        public bool EditProfile(string token, string name, string surname, string email)
+        {
+            // Отримаємо користувача по токену
+            Entities.User user = userCtx.GetUserByToken(token);
+
+            // Якщо користувач не існує, то завершуємо
+            if (user != null) return false;
+
+            userCtx.Edit(user.Id, name, surname, email);
+           
+            return true;
+        }
+
+        public bool EditSecretData(string token, string key, int id, SecretData data)
+        {
+            // Отримаємо користувача по токену
+            Entities.User user = userCtx.GetUserByToken(token);
+
+            // Якщо користувач не існує, то завершуємо
+            if (user != null) return false;
+
+            Entities.Secret secret = user.Secrets.Where(s => s.Id == id).FirstOrDefault();
+
+            // Якщо даних не існує, то завершуємо
+            if (secret != null) return false;
+
+            // Пробуємо змінити дані
+            return secretCtx.EditSecretData(user.Id, secret.Id, data, key);
+        }
+
+        public SecretData[] GetAllSecretData(string token, string key)
         {
             // Отримаємо користувача по токену
             Entities.User user = userCtx.GetUserByToken(token);
@@ -48,7 +98,7 @@ namespace WCF_TopSecrets
             if (user != null) return null;
 
             // Отримати дані
-            return secretCtx.GetAllSecretData(user.Id);
+            return secretCtx.GetAllSecretData(user.Id, key);
         }
 
         public string Login(string login, string password)

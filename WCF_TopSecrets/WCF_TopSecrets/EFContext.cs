@@ -23,13 +23,13 @@ namespace WCF_TopSecrets
         //}
     }
     
-    public class StoreDbInitializer : DropCreateDatabaseAlways<EFContext>
+    public class StoreDbInitializer : DropCreateDatabaseIfModelChanges<EFContext>
     {
         protected override void Seed(EFContext db)
         {
             BLL.User userBLL = new BLL.User();
 
-            userBLL.Create("demo", "fsadgas");
+            userBLL.Create("demo", "12345678");
           
         }
     }
