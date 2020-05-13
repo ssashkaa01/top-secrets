@@ -63,10 +63,13 @@ namespace WPF_TopSecrets
                     login = loginWindow.login;
                     key = loginWindow.key;
                     SetAuthInterface(true);
+                    UpdateSecretDatas();
                 }
             } else
             {
                 SetAuthInterface(false);
+                RemoveAuth();
+                SecretsDataCollection.Clear();
             }
             
         }
@@ -94,29 +97,42 @@ namespace WPF_TopSecrets
             manageSecretData.service = serviceTopSecrets;
             manageSecretData.token = token;
             manageSecretData.key = key;
-            manageSecretData.ShowDialog();
+
+            bool? res = manageSecretData.ShowDialog();
+
+            if (res == true)
+            {
+                UpdateSecretDatas();
+            }
         }
 
         // Редагувати секретні дані
         private void EditSecretDataBtn_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Objects.SecretData secret in SecretsDataCollection)
+            foreach (Objects.SecretData secret in SecretsDataCollection.ToList())
             {
                 if (secret.IsSelected)
                 {
-                    ServiceTopSecrets.SecretData secretData = new ServiceTopSecrets.SecretData();
-                    secretData.Login = secret.Login;
-                    secretData.Password = secret.Password;
-                    secretData.Url = secret.Url;
-                    secretData.Description = secret.Description;
-
+                    ServiceTopSecrets.SecretData secretData = new ServiceTopSecrets.SecretData()
+                    {
+                        Login = secret.Login,
+                        Password = secret.Password,
+                        Url = secret.Url,
+                        Description = secret.Description
+                    };
+                   
                     EditSecretData manageSecretData = new EditSecretData(secretData);
                     manageSecretData.service = serviceTopSecrets;
                     manageSecretData.token = token;
                     manageSecretData.key = key;
                     manageSecretData.id = secret.Id;
-                   
-                    manageSecretData.ShowDialog();
+
+                    bool? res = manageSecretData.ShowDialog();
+
+                    if (res == true)
+                    {
+                        UpdateSecretDatas();
+                    }
                 }
             }
         }
@@ -124,18 +140,20 @@ namespace WPF_TopSecrets
         // Видалити секретні дані
         private void DeleteSecretDataBtn_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Objects.SecretData secret in SecretsDataCollection)
+            foreach (Objects.SecretData secret in SecretsDataCollection.ToList())
             {
                 if(secret.IsSelected)
                 {
+                    MessageBox.Show(secret.Id.ToString());
                     serviceTopSecrets.DeleteSecretData(token, secret.Id);
-                    SecretsDataCollection.Remove(secret);
                 }
             }
+
+            UpdateSecretDatas();
         }
 
         // Встановити статус інтерфуйсу згідно авторизації
-        private async void SetAuthInterface(bool auth = true)
+        private void SetAuthInterface(bool auth = true)
         {
             isAuth = auth;
 
@@ -148,31 +166,8 @@ namespace WPF_TopSecrets
                 LoginBtn.IsEnabled = true;
                 RegisterBtn.IsEnabled = false;
                 ChangeProfileBtn.IsEnabled = true;
-
                 HappyBlock.Text = "Привіт, " + login;
                 LoginBtn.Content = "ВИХІД";
-
-                try
-                {
-                    ServiceTopSecrets.SecretData[] secretDatas = await serviceTopSecrets.GetAllSecretDataAsync(token, key);
-
-                    foreach (ServiceTopSecrets.SecretData sd in secretDatas)
-                    {
-                        SecretsDataCollection.Add(new Objects.SecretData()
-                        {
-                            IsSelected = false,
-                            Description = sd.Description,
-                            Url = sd.Url,
-                            Login = sd.Login,
-                            Password = sd.Password
-                        });
-                    }
-
-                } catch (Exception ex)
-                {
-                    MessageBox.Show("Сталася помилка при отриманні даних");
-                }
-               
             }
             else
             {
@@ -183,13 +178,8 @@ namespace WPF_TopSecrets
                 LoginBtn.IsEnabled = true;
                 RegisterBtn.IsEnabled = true;
                 ChangeProfileBtn.IsEnabled = false;
-
-                RemoveAuth();
-
                 HappyBlock.Text = "ЗБЕРІГАЙТЕ ДАНІ БЕЗПЕЧНО НА =TOP=SECRETS=";
                 LoginBtn.Content = "ВХІД";
-
-                SecretsDataCollection.Clear();
             }
         }
 
@@ -201,6 +191,35 @@ namespace WPF_TopSecrets
             token = "";
             login = "";
             key = "";
+        }
+
+        // Оновити список 
+        private async void UpdateSecretDatas()
+        {
+            SecretsDataCollection.Clear();
+
+            try
+            {
+                ServiceTopSecrets.SecretData[] secretDatas = await serviceTopSecrets.GetAllSecretDataAsync(token, key);
+
+                foreach (ServiceTopSecrets.SecretData sd in secretDatas)
+                {
+                    SecretsDataCollection.Add(new Objects.SecretData()
+                    {
+                        IsSelected = false,
+                        Description = sd.Description,
+                        Url = sd.Url,
+                        Login = sd.Login,
+                        Password = sd.Password,
+                        Id = sd.Id
+                    });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Сталася помилка при отриманні даних");
+            }
         }
     }
 }
