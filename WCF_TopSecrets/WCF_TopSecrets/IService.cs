@@ -74,7 +74,8 @@ namespace WCF_TopSecrets
 
         bool IsEmpty(string value)
         {
-            return value == "" || value == null;
+            //return value == "" || value == null;
+            return value == "";
         }
 
         [DataMember]

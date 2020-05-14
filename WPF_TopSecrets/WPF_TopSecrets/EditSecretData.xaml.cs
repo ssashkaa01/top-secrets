@@ -67,8 +67,7 @@ namespace WPF_TopSecrets
             secretData.Login = loginBox.Text;
             secretData.Password = passBox.Text;
 
-            MessageBox.Show(id.ToString());
-
+          
             bool res = await service.EditSecretDataAsync(token, key, id, secretData);
 
             if (res)

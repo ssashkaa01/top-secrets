@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WCF_TopSecrets.Security;
 
 namespace WCF_TopSecrets.BLL
 {
     class Secret
     {
         EFContext ctx = new EFContext();
+        SecurityProxy sp = new SecurityProxy();
 
         // Отримати дані по користувачу
         public SecretData[] GetAllSecretData(int userId, string key)
         {
-            return ctx.Secrets.Where(s => s.UserId == userId).Select(s => new SecretData()
+            SecretData[] secretDatas = ctx.Secrets.Where(s => s.UserId == userId).Select(s => new SecretData()
             {
                 Id = s.Id,
                 Description = s.Description,
@@ -21,6 +23,22 @@ namespace WCF_TopSecrets.BLL
                 Password = s.Password,
                 Url = s.Url
             }).ToArray();
+
+            foreach(SecretData sd in secretDatas)
+            {
+                try
+                {
+                    sd.Description = sp.Decrypt(key, sd.Description);
+                    sd.Login = sp.Decrypt(key, sd.Login);
+                    sd.Password = sp.Decrypt(key, sd.Password);
+                    sd.Url = sp.Decrypt(key, sd.Url);
+                } catch (Exception ex)
+                {
+
+                }
+            }
+
+            return secretDatas;
         }
 
         // Добавити секретні дані 
@@ -28,10 +46,10 @@ namespace WCF_TopSecrets.BLL
         {
             ctx.Secrets.Add(new Entities.Secret()
             {
-                Login = data.Login,
-                Password = data.Password,
-                Description = data.Description,
-                Url = data.Url,
+                Login = sp.Encrypt(key, data.Login),
+                Password = sp.Encrypt(key, data.Password),
+                Description = sp.Encrypt(key, data.Description),
+                Url = sp.Encrypt(key, data.Url),
                 UserId = Convert.ToInt32(userId),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
@@ -47,10 +65,10 @@ namespace WCF_TopSecrets.BLL
 
             if (secret == null) return false;
 
-            secret.Login = data.Login;
-            secret.Password = data.Password;
-            secret.Description = data.Description;
-            secret.Url = data.Url;
+            secret.Login = sp.Encrypt(key, data.Login);
+            secret.Password = sp.Encrypt(key, data.Password);
+            secret.Description = sp.Encrypt(key, data.Description);
+            secret.Url = sp.Encrypt(key, data.Url);
             secret.UpdatedAt = DateTime.Now;
 
             ctx.SaveChanges();

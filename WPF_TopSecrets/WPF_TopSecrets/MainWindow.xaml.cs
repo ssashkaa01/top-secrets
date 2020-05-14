@@ -144,7 +144,6 @@ namespace WPF_TopSecrets
             {
                 if(secret.IsSelected)
                 {
-                    MessageBox.Show(secret.Id.ToString());
                     serviceTopSecrets.DeleteSecretData(token, secret.Id);
                 }
             }
